@@ -1,8 +1,10 @@
 class RegistrationsController < ApplicationController
+  layout 'cities'
+
   before_filter :setup_properties
 
   def new
-    if @event.accepting_registrations?
+    if @event.registrations_open?
       @registration = @event.registrations.build
     else
       redirect_to city_event_path(@city, @event)

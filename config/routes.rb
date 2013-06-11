@@ -6,7 +6,7 @@ RailsgirlsLondon::Application.routes.draw do
     resources :events do
       resources :registrations, only: [:show]
     end
-    resources :event_sponsorships, only: [:create, :destroy]
+    resources :event_sponsorships, only: [:create, :destroy, :update]
     resources :event_coachings, only: [:create, :destroy]
     resources :sponsors
     resources :coaches
@@ -15,6 +15,8 @@ RailsgirlsLondon::Application.routes.draw do
   end
 
   get "/404", to: "errors#not_found"
+
+  get "/:id/sponsor" => "cities#sponsor", as: :city_sponsor
 
   resources :cities, path: "", only: [:show] do
     resources :events, only: [:show] do

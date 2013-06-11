@@ -5,8 +5,8 @@
   %div#location-map{ data: { address: @event.address, coordinates: @event.coordinates } }
 
 %section
-
-  .title= @event.title
+  %h1.title.highlight=@event.title if @event.title
+  .dates=@event.dates
 
   %p.lead
     = @event.description
@@ -14,11 +14,14 @@
   -if @event.active
     %div
       - if @event.accepting_registrations?
-        = link_to "Apply to the event.", new_city_event_registration_path(@city, @event)
-        \-
-        %small Applications are open until the #{I18n.l(@event.registration_deadline)}
+        - if @event.registrations_open?
+          = link_to "Apply to the event.", new_city_event_registration_path(@city, @event)
+          \-
+          %small Applications are open until the #{I18n.l(@event.registration_deadline)}
+        - else
+          Applications are now closed.
       - else
-        Applications are not available.
+        Applications are not available for this event.
 
       .pull-right
         =render partial: 'shared/tweet_button', locals: { twitter: city_twitter, text: "Rails Girls #{city_name} #{@event.title}. Get excited and make things!" }
@@ -52,14 +55,24 @@
 
 =render_event_partial
 
--if @event.active
+-if @event.active?
   =link_to "View event schedule", "http://railsgirls.com/#{city_slug}"
+
+- if @event.has_host?
+  %section.host
+    %h3.underline Host
+    .row
+      .span6
+        %h5= @event.host_name
+        %p= @event.address_line_1
+        %p= @event.address_line_2
+        %p= "#{@event.address_city}, #{@event.address_postcode}"
 
 %section.sponsors
   %h3.underline Sponsors
   .row
     %ul.sponsors.inline
-      - @event.sponsors.each do |sponsor|
+      - @event.non_hosting_sponsors.each do |sponsor|
         %li.span2
           %h5
             = link_to sponsor.website do

@@ -40,11 +40,13 @@ ActiveRecord::Schema.define(version: 20130611204052) do
   add_index "event_coachings", ["event_id", "coach_id"], name: "index_event_coachings_on_event_id_and_coach_id", unique: true
 
   create_table "event_sponsorships", force: true do |t|
-    t.integer "event_id",   null: false
-    t.integer "sponsor_id", null: false
+    t.integer "event_id",                   null: false
+    t.integer "sponsor_id",                 null: false
+    t.boolean "host",       default: false, null: false
   end
 
   add_index "event_sponsorships", ["event_id", "sponsor_id"], name: "index_event_sponsorships_on_event_id_and_sponsor_id", unique: true
+  add_index "event_sponsorships", ["host"], name: "index_event_sponsorships_on_host"
 
   create_table "events", force: true do |t|
     t.text     "description"
@@ -57,6 +59,7 @@ ActiveRecord::Schema.define(version: 20130611204052) do
     t.date     "registration_deadline"
     t.text     "address",               limit: 255
     t.string   "coordinates"
+    t.string   "title"
   end
 
   create_table "registrations", force: true do |t|
@@ -89,6 +92,10 @@ ActiveRecord::Schema.define(version: 20130611204052) do
     t.text   "description"
     t.string "image_url"
     t.string "website"
+    t.string "address_line_1"
+    t.string "address_line_2"
+    t.string "address_city"
+    t.string "address_postcode"
   end
 
   create_table "users", force: true do |t|
