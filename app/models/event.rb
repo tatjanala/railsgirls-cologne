@@ -37,7 +37,6 @@ class Event < ActiveRecord::Base
   def title
     "#{self.starts_on.strftime("%d")}-#{self.ends_on.strftime("%d")} #{self.starts_on.strftime("%B %Y")}"
   end
-  
   def accepting_registrations?
     return true if registration_deadline.present?
   end
@@ -48,8 +47,7 @@ class Event < ActiveRecord::Base
 
   def host
     event_sponsorship = event_sponsorships.where(host: true).first
-
-    event_sponsorship.present? and return event_sponsorship.sponsor
+    event_sponsorship.sponsor if event_sponsorship.present?
   end
 
   def non_hosting_sponsors
