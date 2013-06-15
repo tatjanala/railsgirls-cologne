@@ -1,3 +1,5 @@
+require_lib 'events/geocode_address'
+
 class Sponsor < ActiveRecord::Base
   ADDRESS_FIELDS = [
     :address_line_1,
@@ -22,6 +24,10 @@ class Sponsor < ActiveRecord::Base
   has_many :event_sponsorships
   has_many :events, through: :event_sponsorships
 
+  serialize :coordinates, Hash
+
+  before_save :update_coordinates, if: :address_changed?
+
   def is_host?
     event_sponsorships.where(host: true).any? 
   end
@@ -35,4 +41,19 @@ class Sponsor < ActiveRecord::Base
       self.send(field).present?
     end
   end
+
+  def address
+    ADDRESS_FIELDS.map {|field| self.send(field) }.join("\n")
+  end
+
+  def address_changed?
+    ADDRESS_FIELDS.any? do |field|
+      self.send(:"#{field}_changed?")
+    end
+  end
+
+  def update_coordinates
+    self[:coordinates] = Events::GeocodeAddress.to_coordinates(address)
+  end
+
 end

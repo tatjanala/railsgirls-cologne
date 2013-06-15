@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(version: 20130611204052) do
 
   create_table "cities", force: true do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "twitter"
     t.string   "slug"
     t.string   "email"
@@ -52,13 +52,12 @@ ActiveRecord::Schema.define(version: 20130611204052) do
     t.text     "description"
     t.integer  "city_id"
     t.boolean  "active"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.date     "starts_on"
     t.date     "ends_on"
     t.date     "registration_deadline"
     t.text     "address",               limit: 255
-    t.string   "coordinates"
     t.string   "title"
   end
 
@@ -71,8 +70,8 @@ ActiveRecord::Schema.define(version: 20130611204052) do
     t.string   "phone_number"
     t.text     "programming_experience"
     t.text     "reason_for_applying"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "uk_resident"
     t.string   "os"
     t.string   "os_version"
@@ -96,6 +95,7 @@ ActiveRecord::Schema.define(version: 20130611204052) do
     t.string "address_line_2"
     t.string "address_city"
     t.string "address_postcode"
+    t.string "coordinates"
   end
 
   create_table "users", force: true do |t|
@@ -112,8 +112,8 @@ ActiveRecord::Schema.define(version: 20130611204052) do
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

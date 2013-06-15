@@ -1,11 +1,8 @@
-require_lib 'events/geocode_address'
-
 class Event < ActiveRecord::Base
   ATTRIBUTES = [ :title,
                  :description,
                  :city_id,
                  :city,
-                 :coordinates,
                  :starts_on,
                  :ends_on,
                  :registration_deadline,
@@ -17,10 +14,11 @@ class Event < ActiveRecord::Base
   validates :active, uniqueness: {scope: :city_id}, if: :active?
 
   delegate :name, to: :city, prefix: true
-  
-  delegate :address_line_1, :address_line_2, :address_postcode, :address_city, to: :host
-  
-  delegate :name, to: :host, prefix: true
+
+  delegate :address_line_1, :address_line_2, :address_postcode,
+           :address_city, :address, :coordinates, to: :host
+
+  delegate :name, :website, :image_url, :description, to: :host, prefix: true
 
   belongs_to :city
   has_many :registrations
@@ -31,12 +29,10 @@ class Event < ActiveRecord::Base
   has_many :event_coachings
   has_many :coaches, through: :event_coachings
 
-  delegate :address_line_1, :address_line_2, :address_postcode, :address_city, to: :host
-  delegate :name, :website, :image_url, :description, to: :host, prefix: true
-
   def title
     "#{self.starts_on.strftime("%d")}-#{self.ends_on.strftime("%d")} #{self.starts_on.strftime("%B %Y")}"
   end
+
   def accepting_registrations?
     return true if registration_deadline.present?
   end
@@ -47,7 +43,7 @@ class Event < ActiveRecord::Base
 
   def host
     event_sponsorship = event_sponsorships.where(host: true).first
-    event_sponsorship.sponsor if event_sponsorship.present?
+    event_sponsorship.present? and return event_sponsorship.sponsor
   end
 
   def non_hosting_sponsors
@@ -85,13 +81,6 @@ class Event < ActiveRecord::Base
 
   def until_day_month_and_year date
     date.strftime("-%-d %B %Y")
-  end
-
-  def address=(address)
-    super address
-
-    # cache the coordinates of the location for showing on a map
-    self.coordinates = Events::GeocodeAddress.to_coordinates(address)
   end
 
 end

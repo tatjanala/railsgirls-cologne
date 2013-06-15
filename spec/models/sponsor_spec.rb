@@ -46,4 +46,17 @@ describe Sponsor do
     specify { expect(subject.is_host_for?(event)).to eq(true) }
     specify { expect(subject.is_host_for?(other_event)).to eq(false) }
   end
+
+  describe "address coordinates" do
+    it "should update the map coordinates when changing the address" do
+      subject.should_receive(:update_coordinates).once
+
+      subject.update_attributes(
+        address_line_1: '10 Downing St',
+        address_city: 'London',
+        address_postcode: 'SW1A 2AA'
+      )
+    end
+  end
+
 end

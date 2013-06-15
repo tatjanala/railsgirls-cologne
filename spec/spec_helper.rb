@@ -39,5 +39,12 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
   config.include FeatureHelpers, type: :feature
+
+  config.before :each do
+    Sponsor.any_instance.stub(:update_coordinates).and_return(
+      { 'lat' => 1.23456, 'lng' => 0.12345 }
+    )
+  end
+
 end
 
