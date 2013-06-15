@@ -31,13 +31,13 @@ class Event < ActiveRecord::Base
   has_many :event_coachings
   has_many :coaches, through: :event_coachings
 
-  serialize :coordinates, Hash
-
+  delegate :address_line_1, :address_line_2, :address_postcode, :address_city, to: :host
+  delegate :name, :website, :image_url, :description, to: :host, prefix: true
 
   def title
     "#{self.starts_on.strftime("%d")}-#{self.ends_on.strftime("%d")} #{self.starts_on.strftime("%B %Y")}"
   end
-
+  
   def accepting_registrations?
     return true if registration_deadline.present?
   end
@@ -65,6 +65,10 @@ class Event < ActiveRecord::Base
     dates = day(starts_on)
     dates << month(starts_on) unless starts_on.month.eql? ends_on.month
     dates << until_day_month_and_year(ends_on)
+  end
+
+  def export_applications_to_trello
+    EventTrello.new(self).export
   end
 
   private
